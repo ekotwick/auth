@@ -25,6 +25,25 @@ router.get('/', function (req, res, next) {
   .catch(next);
 });
 
+
+router.post('/login', function(req,res,next){
+  User.findOne({
+    where: { email: req.body.email,
+            password: req.body.password
+          }
+    })
+    .then(foundPerson => {
+      if(!foundPerson) res.sendStatus(401)
+      else {
+        req.session.userId = foundPerson.id
+        res.sendStatus(200)
+      }
+    })
+    .catch(next)
+
+});
+
+
 router.post('/', function (req, res, next) {
   User.create(req.body)
   .then(function (user) {
