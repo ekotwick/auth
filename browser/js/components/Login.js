@@ -60,8 +60,7 @@ class Login extends React.Component {
 
   onLoginSubmit(event) {
 
-    console.log('email\n', event.target.email.value);
-    console.log('password\n', event.target.password.value);
+    
 
     const user = {
       email: event.target.email.value,

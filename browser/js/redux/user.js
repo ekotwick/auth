@@ -13,7 +13,7 @@ const SET = 'SET_CURRENT_USER';
 
 
 const create = user  => ({ type: CREATE, user });
-const remove = id    => ({ type: REMOVE, id });
+export const remove = id    => ({ type: REMOVE, id });
 const update = user  => ({ type: UPDATE, user });
 const set = user => ({ type: SET, user });
 
@@ -72,7 +72,10 @@ export const updateUser = (id, user) => dispatch => {
 
 export const setUser = (user) => dispatch => {
   axios.post(`api/users/login`, user)
-    .then(res => dispatch(set(res.data)))
+    .then(res => {
+      console.log(res.data, 'res.data');
+      dispatch(set(res.data))
+    })
     .catch(err => console.error(`Setting user: ${user} unsuccesful`,
       err));
 };

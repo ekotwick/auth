@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link, browserHistory } from 'react-router';
+import store from '../store'
+import { remove } from '../redux/users'
 
 /* -----------------    COMPONENT     ------------------ */
 
@@ -9,6 +11,7 @@ class Navbar extends React.Component {
     super(props);
     this.renderLoginSignup = this.renderLoginSignup.bind(this);
     this.renderLogout = this.renderLogout.bind(this);
+    this.onLogoutSubmit = this.onLogoutSubmit.bind(this)
   }
 
   render() {
@@ -63,24 +66,36 @@ class Navbar extends React.Component {
         <li>
         <button
           className="navbar-btn btn btn-default"
-          onClick={this.props.logout}>
+          onClick={this.onLogoutSubmit}>
           logout
         </button>
         </li>
       </ul>
     );
   }
+
+
+
+onLogoutSubmit(){
+  console.log(store.getState());
+  const userId = store.getState().user.id
+  this.props.onLogoutSubmit(userId)
 }
+
+}
+
 
 /* -----------------    CONTAINER     ------------------ */
 
 const mapProps = null;
 
-const mapDispatch = dispatch => ({
-  logout: () => {
-    console.log('You signed out. Sorta.');
-    browserHistory.push('/');
+const mapDispatch = dispatch => {
+  return {
+    onLogoutSubmit(userId) {
+      dispatch(remove(userId))
+      browserHistory.push('/');
+    }
   }
-});
+};
 
 export default connect(mapProps, mapDispatch)(Navbar);

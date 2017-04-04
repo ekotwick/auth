@@ -13,7 +13,7 @@ const SET = 'SET_CURRENT_USER';
 
 const init  = users => ({ type: INITIALIZE, users });
 const create = user  => ({ type: CREATE, user });
-const remove = id    => ({ type: REMOVE, id });
+export const remove = id    => ({ type: REMOVE, id });
 const update = user  => ({ type: UPDATE, user });
 const set = user => ({ type: SET, user });
 
@@ -28,19 +28,19 @@ export default function reducer (users = [], action) {
     case INITIALIZE:
       return action.users;
 
-    // case CREATE:
-    //   return [action.user, ...users];
+    case CREATE:
+      return [action.user, ...users];
 
-    // case REMOVE:
-    //   return users.filter(user => user.id !== action.id);
+    case REMOVE:
+      return users.filter(user => user.id !== action.id);
 
-    // case UPDATE:
-    //   return users.map(user => (
-    //     action.user.id === user.id ? action.user : user
-    //   ));
+    case UPDATE:
+      return users.map(user => (
+        action.user.id === user.id ? action.user : user
+      ));
 
-    // case SET:
-    //   return action.user;
+    case SET:
+      return action.user;
 
     default:
       return users;

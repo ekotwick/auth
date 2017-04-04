@@ -36,11 +36,14 @@ router.post('/login', function(req,res,next){
       if(!foundPerson) res.sendStatus(401)
       else {
         req.session.userId = foundPerson.id
-        res.sendStatus(200)
+        res.json(foundPerson)
+
       }
     })
     .catch(next)
 });
+
+
 
 router.post('/signup', function(req,res,next){
   console.log('req.body\n', req.body);
