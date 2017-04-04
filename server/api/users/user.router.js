@@ -40,9 +40,19 @@ router.post('/login', function(req,res,next){
       }
     })
     .catch(next)
-
 });
 
+router.post('/signup', function(req,res,next){
+  console.log('req.body\n', req.body);
+  User.create(req.body)
+    .then(createdPerson => {
+      // if(!createdPerson) res.sendStatus(401)
+      // else {
+        req.session.userId = createdPerson.id
+        res.sendStatus(200)
+    })
+    .catch(next)
+});
 
 router.post('/', function (req, res, next) {
   User.create(req.body)
