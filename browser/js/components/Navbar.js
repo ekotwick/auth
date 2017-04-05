@@ -2,7 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link, browserHistory } from 'react-router';
 import store from '../store'
-import { remove } from '../redux/users'
+import { unSetUser } from '../redux/user';
+import axios from 'axios';
 
 /* -----------------    COMPONENT     ------------------ */
 
@@ -78,8 +79,11 @@ class Navbar extends React.Component {
 
 onLogoutSubmit(){
   console.log(store.getState());
-  const userId = store.getState().user.id
-  this.props.onLogoutSubmit(userId)
+  // put the axios elsewhere; keet all axios requests in thunks
+  axios.put('/logout', {});
+  // const userId = store.getState().user.id
+  this.props.onLogoutSubmit();
+  console.log(store.getState());  
 }
 
 }
@@ -91,8 +95,8 @@ const mapProps = null;
 
 const mapDispatch = dispatch => {
   return {
-    onLogoutSubmit(userId) {
-      dispatch(remove(userId))
+    onLogoutSubmit() {
+      dispatch(unSetUser());
       browserHistory.push('/');
     }
   }

@@ -24260,7 +24260,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.createUser = exports.setUser = exports.updateUser = exports.addUser = exports.removeUser = exports.remove = exports.REMOVE = undefined;
+	exports.createUser = exports.unSetUser = exports.setUser = exports.updateUser = exports.addUser = exports.removeUser = exports.remove = exports.REMOVE = undefined;
 	exports.default = reducer;
 	
 	var _axios = __webpack_require__(219);
@@ -24269,14 +24269,13 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-	
 	/* -----------------    ACTIONS     ------------------ */
 	
 	var CREATE = 'CREATE_USER';
 	var REMOVE = exports.REMOVE = 'REMOVE_USER';
 	var UPDATE = 'UPDATE_USER';
 	var SET = 'SET_CURRENT_USER';
+	var UNSET = 'UNSET';
 	
 	/* ------------   ACTION CREATORS     ------------------ */
 	
@@ -24292,34 +24291,37 @@
 	var set = function set(user) {
 	  return { type: SET, user: user };
 	};
+	var unSet = function unSet(user) {
+	  return { type: UNSET, user: user };
+	};
 	
 	/* ------------       REDUCER     ------------------ */
 	
 	function reducer() {
-	  var users = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+	  var user = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 	  var action = arguments[1];
 	
 	
 	  switch (action.type) {
 	
-	    case CREATE:
-	      return [action.user].concat(_toConsumableArray(users));
+	    // case CREATE:
+	    //   return [action.user, ...users];
 	
-	    case REMOVE:
-	      return users.filter(function (user) {
-	        return user.id !== action.id;
-	      });
+	    case UNSET:
+	      return action.user;
+	    // case REMOVE:
+	    //   return users.filter(user => user.id !== action.id);
 	
-	    case UPDATE:
-	      return users.map(function (user) {
-	        return action.user.id === user.id ? action.user : user;
-	      });
+	    // case UPDATE:
+	    //   return users.map(user => (
+	    //     action.user.id === user.id ? action.user : user
+	    //   ));
 	
 	    case SET:
 	      return action.user;
 	
 	    default:
-	      return users;
+	      return user;
 	  }
 	}
 	
@@ -24368,6 +24370,13 @@
 	    }).catch(function (err) {
 	      return console.error('Setting user: ' + user + ' unsuccesful', err);
 	    });
+	  };
+	};
+	
+	var unSetUser = exports.unSetUser = function unSetUser() {
+	  return function (dispatch) {
+	
+	    dispatch(unSet({}));
 	  };
 	};
 	
@@ -25896,7 +25905,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.fetchUsers = exports.remove = exports.REMOVE = undefined;
+	exports.createUser = exports.updateUser = exports.addUser = exports.removeUser = exports.fetchUsers = exports.remove = exports.REMOVE = undefined;
 	exports.default = reducer;
 	
 	var _axios = __webpack_require__(219);
@@ -25958,8 +25967,8 @@
 	        return action.user.id === user.id ? action.user : user;
 	      });
 	
-	    case SET:
-	      return action.user;
+	    // case SET:
+	    //   return action.user;
 	
 	    default:
 	      return users;
@@ -25976,24 +25985,35 @@
 	  };
 	};
 	
-	// // optimistic
-	// export const removeUser = id => dispatch => {
-	//   dispatch(remove(id));
-	//   axios.delete(`/api/users/${id}`)
-	//        .catch(err => console.error(`Removing user: ${id} unsuccesful`, err));
-	// };
+	// optimistic
+	var removeUser = exports.removeUser = function removeUser(id) {
+	  return function (dispatch) {
+	    dispatch(remove(id));
+	    _axios2.default.delete('/api/users/' + id).catch(function (err) {
+	      return console.error('Removing user: ' + id + ' unsuccesful', err);
+	    });
+	  };
+	};
 	
-	// export const addUser = user => dispatch => {
-	//   axios.post('/api/users', user)
-	//        .then(res => dispatch(create(res.data)))
-	//        .catch(err => console.error(`Creating user: ${user} unsuccesful`, err));
-	// };
+	var addUser = exports.addUser = function addUser(user) {
+	  return function (dispatch) {
+	    _axios2.default.post('/api/users', user).then(function (res) {
+	      return dispatch(create(res.data));
+	    }).catch(function (err) {
+	      return console.error('Creating user: ' + user + ' unsuccesful', err);
+	    });
+	  };
+	};
 	
-	// export const updateUser = (id, user) => dispatch => {
-	//   axios.put(`/api/users/${id}`, user)
-	//        .then(res => dispatch(update(res.data)))
-	//        .catch(err => console.error(`Updating user: ${user} unsuccesful`, err));
-	// };
+	var updateUser = exports.updateUser = function updateUser(id, user) {
+	  return function (dispatch) {
+	    _axios2.default.put('/api/users/' + id, user).then(function (res) {
+	      return dispatch(update(res.data));
+	    }).catch(function (err) {
+	      return console.error('Updating user: ' + user + ' unsuccesful', err);
+	    });
+	  };
+	};
 	
 	// export const setUser = (user) => dispatch => {
 	//   axios.post(`api/users/login`, user)
@@ -26002,13 +26022,13 @@
 	//       err));
 	// };
 	
-	// export const createUser = (user) => {
-	//   axios.post(`api/users/submit`, user)
-	//     .then(res => dispatch(create(res.data)))
-	//     .catch(err => console.error(`Setting user: ${user} unsuccesful`,
-	//       err));
-	// };
-	
+	var createUser = exports.createUser = function createUser(user) {
+	  _axios2.default.post('api/users/submit', user).then(function (res) {
+	    return dispatch(create(res.data));
+	  }).catch(function (err) {
+	    return console.error('Setting user: ' + user + ' unsuccesful', err);
+	  });
+	};
 	
 	// router.post('/login', function(req,res,next){
 	//   User.findOne({
@@ -31855,7 +31875,11 @@
 	
 	var _store2 = _interopRequireDefault(_store);
 	
-	var _users = __webpack_require__(244);
+	var _user = __webpack_require__(218);
+	
+	var _axios = __webpack_require__(219);
+	
+	var _axios2 = _interopRequireDefault(_axios);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -31990,8 +32014,11 @@
 	    key: 'onLogoutSubmit',
 	    value: function onLogoutSubmit() {
 	      console.log(_store2.default.getState());
-	      var userId = _store2.default.getState().user.id;
-	      this.props.onLogoutSubmit(userId);
+	      // put the axios elsewhere; keet all axios requests in thunks
+	      _axios2.default.put('/logout', {});
+	      // const userId = store.getState().user.id
+	      this.props.onLogoutSubmit();
+	      console.log(_store2.default.getState());
 	    }
 	  }]);
 	
@@ -32004,8 +32031,8 @@
 	
 	var mapDispatch = function mapDispatch(dispatch) {
 	  return {
-	    onLogoutSubmit: function onLogoutSubmit(userId) {
-	      dispatch((0, _users.remove)(userId));
+	    onLogoutSubmit: function onLogoutSubmit() {
+	      dispatch((0, _user.unSetUser)());
 	      _reactRouter.browserHistory.push('/');
 	    }
 	  };

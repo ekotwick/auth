@@ -39,8 +39,8 @@ export default function reducer (users = [], action) {
         action.user.id === user.id ? action.user : user
       ));
 
-    case SET:
-      return action.user;
+    // case SET:
+    //   return action.user;
 
     default:
       return users;
@@ -55,24 +55,24 @@ export const fetchUsers = () => dispatch => {
        .then(res => dispatch(init(res.data)));
 };
 
-// // optimistic
-// export const removeUser = id => dispatch => {
-//   dispatch(remove(id));
-//   axios.delete(`/api/users/${id}`)
-//        .catch(err => console.error(`Removing user: ${id} unsuccesful`, err));
-// };
+// optimistic
+export const removeUser = id => dispatch => {
+  dispatch(remove(id));
+  axios.delete(`/api/users/${id}`)
+       .catch(err => console.error(`Removing user: ${id} unsuccesful`, err));
+};
 
-// export const addUser = user => dispatch => {
-//   axios.post('/api/users', user)
-//        .then(res => dispatch(create(res.data)))
-//        .catch(err => console.error(`Creating user: ${user} unsuccesful`, err));
-// };
+export const addUser = user => dispatch => {
+  axios.post('/api/users', user)
+       .then(res => dispatch(create(res.data)))
+       .catch(err => console.error(`Creating user: ${user} unsuccesful`, err));
+};
 
-// export const updateUser = (id, user) => dispatch => {
-//   axios.put(`/api/users/${id}`, user)
-//        .then(res => dispatch(update(res.data)))
-//        .catch(err => console.error(`Updating user: ${user} unsuccesful`, err));
-// };
+export const updateUser = (id, user) => dispatch => {
+  axios.put(`/api/users/${id}`, user)
+       .then(res => dispatch(update(res.data)))
+       .catch(err => console.error(`Updating user: ${user} unsuccesful`, err));
+};
 
 // export const setUser = (user) => dispatch => {
 //   axios.post(`api/users/login`, user)
@@ -81,12 +81,12 @@ export const fetchUsers = () => dispatch => {
 //       err));
 // };
 
-// export const createUser = (user) => {
-//   axios.post(`api/users/submit`, user)
-//     .then(res => dispatch(create(res.data)))
-//     .catch(err => console.error(`Setting user: ${user} unsuccesful`,
-//       err));
-// };
+export const createUser = (user) => {
+  axios.post(`api/users/submit`, user)
+    .then(res => dispatch(create(res.data)))
+    .catch(err => console.error(`Setting user: ${user} unsuccesful`,
+      err));
+};
 
 
 // router.post('/login', function(req,res,next){

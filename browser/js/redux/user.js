@@ -7,6 +7,7 @@ const CREATE     = 'CREATE_USER';
 export const REMOVE = 'REMOVE_USER';
 const UPDATE     = 'UPDATE_USER';
 const SET = 'SET_CURRENT_USER';
+const UNSET = 'UNSET'
 
 
 /* ------------   ACTION CREATORS     ------------------ */
@@ -16,30 +17,33 @@ const create = user  => ({ type: CREATE, user });
 export const remove = id    => ({ type: REMOVE, id });
 const update = user  => ({ type: UPDATE, user });
 const set = user => ({ type: SET, user });
+const unSet = user => ({ type: UNSET, user });
 
 
 /* ------------       REDUCER     ------------------ */
 
-export default function reducer (users = {}, action) {
+export default function reducer (user = {}, action) {
 
   switch (action.type) {
 
-    case CREATE:
-      return [action.user, ...users];
+    // case CREATE:
+    //   return [action.user, ...users];
 
-    case REMOVE:
-      return users.filter(user => user.id !== action.id);
+    case UNSET:
+      return action.user;
+    // case REMOVE:
+    //   return users.filter(user => user.id !== action.id);
 
-    case UPDATE:
-      return users.map(user => (
-        action.user.id === user.id ? action.user : user
-      ));
+    // case UPDATE:
+    //   return users.map(user => (
+    //     action.user.id === user.id ? action.user : user
+    //   ));
 
     case SET:
       return action.user;
 
     default:
-      return users;
+      return user;
   }
 }
 
@@ -78,6 +82,11 @@ export const setUser = (user) => dispatch => {
     })
     .catch(err => console.error(`Setting user: ${user} unsuccesful`,
       err));
+};
+
+export const unSetUser = () => dispatch => {
+  
+  dispatch(unSet({}));
 };
 
 export const createUser = (user) => dispatch => {

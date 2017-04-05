@@ -11,15 +11,13 @@ app.use(require('./logging.middleware'));
 
 app.use(require('./body-parsing.middleware'));
 
+// ——————————— SESSIONS MIDDLEWARE ————————————— //
 
 app.use(session({
   secret: 'abracadabra',
   resave: false,
   saveUninitialized: false
 }));
-
-
-
 
 app.use('/api', function (req, res, next) {
   if (!req.session.counter) req.session.counter = 0;
@@ -32,7 +30,15 @@ app.use(function (req, res, next) {
   next();
 });
 
+app.put('/logout', (req, res, next) => {
+  // according to stackoverflow, use for cookie-based sessions
+  // req.session = null;
+  req.session.destroy(); // this gets rid of the cookie from the response object *and* in the store.
+  res.sendStatus(200);
+  console.log('destroyed\n', req.session);
+})
 
+// ^^^^^^^^^^^^ SESSIONS MIDDLEWARE ^^^^^^^^^^^^ //
 
 // "Responding" middleware (may send a response back to client)
 
